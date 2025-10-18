@@ -54,4 +54,11 @@ class Blockchain:
         return True
 
 #Part 2 - Mining our Blockchain
+#Creating Web App
+app = Flask(__name__)
 
+#Creating Blockchain
+blockchain = Blockchain()
+
+#Mining a new Block
+@app.route('/mine_block')
