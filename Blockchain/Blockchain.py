@@ -82,7 +82,6 @@ def get_chain():
                 'length': len(blockchain.chain)}
     return jsonify(response), 200
 
-
 #Is chain Valid
 @app.route('/is_valid', methods=['GET'])
 def check_validity():
