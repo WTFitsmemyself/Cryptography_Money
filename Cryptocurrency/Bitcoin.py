@@ -78,7 +78,7 @@ class Blockchain:
         longest_chain = None
         max_length = len(self.chain)
         for node in network:
-            response = requests.get(f'http://{node}/get_chain')
+            response = requests.get(f"http://{node}/get_chain")
             if response.status_code == 200:
                 length = response.json()['length']
                 chain = response.json()['chain']
@@ -108,12 +108,14 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
+    blockchain.add_transactions(sender=node_address, receiver='Hossein', amount=50)
     block = blockchain.create_block(proof, previous_hash)
     response = {'message': 'New Block Forged',
                 'index': block['index'],
                 'timestamp': block['timestamp'],
                 'proof': block['proof'],
-                'previous_hash': block['previous_hash']}
+                'previous_hash': block['previous_hash'],
+                'transactions': block['transactions']}
     return jsonify(response), 200
 
 #Get full Blockchain
@@ -132,6 +134,21 @@ def check_validity():
         return jsonify(response), 400
     response = {'message': 'Block is valid'}
     return jsonify(response), 200
+
+
+#Add new transaction
+@app.route('/add_transaction', methods=['POST'])
+def add_transaction():
+    json = request.get_json()
+    transaction_keys = ['sender', 'receiver', 'amount']
+    if not all (key in transaction_keys for key in json):
+        response = {'message': 'Some elements are missing'}
+        return jsonify(response), 400
+    index = blockchain.add_transactions(json['sender'], json['receiver'], json['amount'])
+    response = {'message': f'Transaction was added to block {index}'}
+    return jsonify(response), 201
+
+#Decentrazing Blockchain
 
 #Running the APP
 app.run(host='0.0.0.0', port=5000)
