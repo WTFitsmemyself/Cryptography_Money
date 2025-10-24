@@ -149,6 +149,37 @@ def add_transaction():
     return jsonify(response), 201
 
 #Decentrazing Blockchain
+#Connecting new nodes
+@app.route('/connect_node', methods=['POST'])
+def connect_node():
+    json = request.get_json()
+    nodes = json.get('nodes')
+    if nodes is None:
+        response = {'message': 'No nodes provided'}
+        return jsonify(response), 400
+    for node in nodes:
+        blockchain.add_node(node)
+        response = {
+                    'message': f'New node connected to {node}',
+                    'total_nodes': f'{list(blockchain.nodes)}',
+                    }
+        return jsonify(response), 200
+    response = {'message': 'No new nodes found'}
+    return jsonify(response), 404
+
+#Replacing the chain by longest chain if needed
+@app.route('/replace_chain', methods=['GET'])
+def replace_chain():
+    is_chain_replaced = blockchain.replace_chain()
+    if is_chain_replaced:
+        response = {'message': 'The node had different chain so the chain was replaced',
+                    'new_chain': blockchain.chain}
+        return jsonify(response), 400
+    response = {'message': 'All good chain is longest one',
+                'longest_chain': blockchain.chain}
+    return jsonify(response), 200
+
+
 
 #Running the APP
 app.run(host='0.0.0.0', port=5000)
