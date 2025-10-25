@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  node1:
+    build: .
+    container_name: blockchain_node1
+    ports:
+      - "5001:5003"
+    environment:
+      - FLASK_RUN_PORT=5003
+
+  node2:
+    build: .
+    container_name: blockchain_node2
+    ports:
+      - "5002:5003"
+    environment:
+      - FLASK_RUN_PORT=5003
+
+  node3:
+    build: .
+    container_name: blockchain_node3
+    ports:
+      - "5003:5003"
+    environment:
+      - FLASK_RUN_PORT=5003
