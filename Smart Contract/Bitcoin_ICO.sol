@@ -38,5 +38,14 @@ contract BitcoinICO{
         return investor_equity_USD[investor];
     }
 
+    //Buy Bitcoin function
+    function buy_btc(address investor, uint usd_invested) external 
+    can_buy_btc(usd_invested){
+        uint BTC_bought = usd_invested * price;
+        investor_equity_BTC[investor] += BTC_bought;
+        investor_equity_USD[investor] = investor_equity_BTC[investor] / price;
+        total_bitcoin_bought += BTC_bought;
+    }
+
 
 }
