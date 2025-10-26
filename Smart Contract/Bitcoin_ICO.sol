@@ -23,7 +23,7 @@ contract BitcoinICO{
     
     // Check if an investor can buy BTC
     modifier can_buy_btc(uint usd_invested) {
-        require (usd_invested * price + total_bitcoin_bought <= max_bitcoin);
+        require (usd_invested / price + total_bitcoin_bought <= max_bitcoin);
         _;
     }
 
@@ -38,14 +38,22 @@ contract BitcoinICO{
         return investor_equity_USD[investor];
     }
 
-    //Buy Bitcoin function
+    //Buy Bitcoin 
     function buy_btc(address investor, uint usd_invested) external 
     can_buy_btc(usd_invested){
-        uint BTC_bought = usd_invested * price;
+        uint BTC_bought = usd_invested / price;
         investor_equity_BTC[investor] += BTC_bought;
-        investor_equity_USD[investor] = investor_equity_BTC[investor] / price;
+        investor_equity_USD[investor] = investor_equity_BTC[investor] * price;
         total_bitcoin_bought += BTC_bought;
     }
 
+    // Selling Bitcoin
+    function sell_btc(address investor, uint btc_sold) external {
+        require(investor_equity_BTC[investor] >= btc_sold, "Not enough BTC to sell");
+        require(total_bitcoin_bought >= btc_sold, "Cannot sell more BTC than bought");
+        investor_equity_BTC[investor] -= btc_sold;
+        investor_equity_USD[investor] = investor_equity_BTC[investor] * price;
+        total_bitcoin_bought -= btc_sold;
+    }
 
-}
+} 
