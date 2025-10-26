@@ -21,4 +21,9 @@ contract BitcoinICO{
     mapping(address => uint) public investor_equity_BTC;
     mapping(address => uint) public investor_equity_USD;
     
+    // Check if an investor can buy BTC
+    modifier can_buy_btc(uint usd_invested) {
+        require (usd_invested * price + total_bitcoin_bought <= max_bitcoin);
+        _;
+    }
 }
