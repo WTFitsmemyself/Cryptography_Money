@@ -26,4 +26,17 @@ contract BitcoinICO{
         require (usd_invested * price + total_bitcoin_bought <= max_bitcoin);
         _;
     }
+
+    // Checking the equity in BTC of an investor
+    function equity_in_BTC(address investor) external view returns(uint){
+        return investor_equity_BTC[investor];
+    }
+
+
+    // Checking the equity in USD of an investor
+    function equity_in_USD(address investor) external view returns(uint){
+        return investor_equity_USD[investor];
+    }
+
+
 }
